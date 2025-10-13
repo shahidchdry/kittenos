@@ -1,0 +1,7 @@
+# Compiled binary files
+*.o
+*.bin
+*.elf
+
+# The final disk image
+os-image.bin
