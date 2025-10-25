@@ -1,18 +1,36 @@
+#include "../cpu/isr.h"
 #include "../drivers/screen.h"
-#include "util.h"
+#include "kernel.h"
+#include "../libc/string.h"
+#include "../libc/mem.h"
 
 void kernel_main() {
-    clear_screen();
-  
-    /* Fill up the screen */
-    int i = 0;
-    for (i = 0; i < 24; i++) {
-        char str[255];
-        int_to_ascii(i, str);
-        kprint_at(str, 0, i);
-    }
+	clear_screen();
+    isr_install();
+    irq_install();
 
-    kprint_at("This text forces the kernel to scroll. Row 0 will disappear. ", 60, 24);
-    kprint("And with this text, the kernel will scroll again, and rows 1,2 and 3 will disappear too!");
-    kprint("\n\nKittenOS display kernel test");
+    kprint("Type something, it will go through the kernel\n"
+        "Type END to halt the CPU or PAGE to request a kmalloc()\n> ");
+}
+
+void user_input(char *input) {
+    if (strcmp(input, "END") == 0) {
+        kprint("Stopping the CPU. Bye!\n");
+        asm volatile("hlt");
+    }/* else if (strcmp(input, "PAGE") == 0) {
+        u32 phys_addr;
+        u32 page = kmalloc(1000, 1, &phys_addr);
+        char page_str[16] = "";
+        hex_to_ascii(page, page_str);
+        char phys_str[16] = "";
+        hex_to_ascii(phys_addr, phys_str);
+        kprint("Page: ");
+        kprint(page_str);
+        kprint(", physical address: ");
+        kprint(phys_str);
+        kprint("\n");
+    }*/
+    kprint("You said: ");
+    kprint(input);
+    kprint("\n> ");
 }

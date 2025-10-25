@@ -1,6 +1,6 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c)
-HEADERS = $(wildcard kernel/*.h drivers/*.h)
-OBJ = ${C_SOURCES:.c=.o}
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.c libc/*.c)
+OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o}
 
 # Use i686 cross-compiler
 CC = i686-linux-gnu-gcc
@@ -57,6 +57,6 @@ debug: os-image.bin kernel.elf
 
 clean:
 	rm -rf *.bin *.dis *.o os-image.bin *.elf
-	rm -rf kernel/*.o boot/*.bin drivers/*.o boot/*.o
+	rm -rf kernel/*.o boot/*.bin drivers/*.o boot/*.o cpu/*.o libc/*.o
 
 .PHONY: run run-vnc run-console debug clean
